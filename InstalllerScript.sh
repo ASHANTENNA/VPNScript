@@ -1,1 +1,8 @@
 echo "Script Installer by AhmedSCRIPT Hacker"
+echo ""
+echo "Select an option"
+echo "1. Install UDP Hysteria V1.3.5"
+echo "2. Install HTTP Proxy"
+echo "3. Install DNSTT, DoH and DoT"
+echo "4. Install ADMRufu MOD"
+echo "5. Exit"
