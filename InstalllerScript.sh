@@ -22,8 +22,18 @@ done
 # Perform actions based on the selected option outside the loop
 case $selected_option in
     1)
-        echo "Performing action for option 1."
-        # Add your action for option 1 here
+        echo "Installing UDP Hysteria V1.3.5 ..."
+        apt-get update && apt-get upgrade
+        apt install wget -y
+        apt install nano -y
+        apt install net-tools
+        mkdir hy
+        cd hy
+        wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
+        chmod 755 hysteria-linux-amd64
+        openssl ecparam -genkey -name prime256v1 -out ca.key
+        openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
+        
         ;;
     2)
         echo "Performing action for option 2."
