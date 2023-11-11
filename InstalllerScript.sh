@@ -58,7 +58,7 @@ case $selected_option in
         fi
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
-        apt -y install iptable
+        apt -y install iptables-persistent
         while true; do
             read -p "Binding UDP Ports : from port : " first_number
             if is_number "$first_number" && [ "$first_number" -ge 1 ] && [ "$first_number" -le 65534 ]; then
