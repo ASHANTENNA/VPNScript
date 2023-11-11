@@ -98,7 +98,7 @@ case $selected_option in
         echo "Installing HTTP Proxy..."
         while true; do
             read -p "Remote HTTP Port : "$http_port
-            if is_number "$http_port" && [ "$http_port" -ge 1 ] && [ "$http_port" -le 65535 ]; then
+            if is_number "$http_port" && [ "$http_port" -gt 1 ] && [ "$http_port" -lt 65535 ]; then
                 break
             else
                 echo "Invalid input. Please enter a valid number between 1 and 65535."
