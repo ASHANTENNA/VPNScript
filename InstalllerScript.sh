@@ -45,7 +45,10 @@ case $selected_option in
         apt install net-tools
         mkdir hy
         cd hy
-        wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
+        udp_script="/root/hy/hysteria-linux-amd64"
+        if [ ! -e "$udp_script" ]; then
+            wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
+        fi
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
         openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
@@ -106,7 +109,10 @@ case $selected_option in
         done
         mkdir tcp
         cd tcp
-        wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
+        http_script="/root/hy/hysteria-linux-amd64"
+        if [ ! -e "$http_script" ]; then
+            wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
+        fi
         screen -dmS ssh_proxy ./sshProxy_linux_amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
         echo "HTTP Proxy installed successfully"
         exit 1
