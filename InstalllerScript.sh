@@ -109,7 +109,7 @@ case $selected_option in
         done
         mkdir tcp
         cd tcp
-        http_script="/root/hy/hysteria-linux-amd64"
+        http_script="/root/tcp/sshProxy_linux_amd64"
         if [ ! -e "$http_script" ]; then
             wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
         fi
