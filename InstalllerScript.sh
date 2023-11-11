@@ -89,8 +89,21 @@ case $selected_option in
         exit 1
         ;;
     2)
-        echo "Performing action for option 2."
-        # Add your action for option 2 here
+        echo "Installing HTTP Proxy..."
+        while true; do
+            read -p "Remote HTTP Port : "$http_port
+            if is_number "$http_port" && [ "$http_port" -ge 1 ] && [ "$http_port" -le 65535 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number between 1 and 65535."
+            fi
+        done
+        mkdir tcp
+        cd tcp
+        wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
+        screen -dmS ssh_proxy ./sshProxy_linux_amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
+        echo "HTTP Proxy installed successfully"
+        exit 1
         ;;
     3)
         echo "Performing action for option 3."
