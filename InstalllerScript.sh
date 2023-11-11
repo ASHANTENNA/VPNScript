@@ -19,3 +19,27 @@ while [ $selected_option -lt 1 ] || [ $selected_option -gt 5 ]; do
         echo "Invalid input. Please enter a valid number."
     fi
 done
+# Perform actions based on the selected option outside the loop
+case $selected_option in
+    1)
+        echo "Performing action for option 1."
+        # Add your action for option 1 here
+        ;;
+    2)
+        echo "Performing action for option 2."
+        # Add your action for option 2 here
+        ;;
+    3)
+        echo "Performing action for option 3."
+        # Add your action for option 3 here
+        ;;
+    4)
+        echo "Performing action for option 4."
+        # Add your action for option 4 here
+        ;;
+    5)
+        echo "Performing action for option 5. Exiting the script."
+        # Add your action for option 5 here
+        exit  # Exit the script after option 5 is selected
+        ;;
+esac
