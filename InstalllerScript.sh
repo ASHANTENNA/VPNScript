@@ -47,7 +47,9 @@ case $selected_option in
             echo "Error: Unable to save the config.json file"
             exit 1
         fi
-        
+        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
+        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
+        apt -y install iptables-persistent
         ;;
     2)
         echo "Performing action for option 2."
