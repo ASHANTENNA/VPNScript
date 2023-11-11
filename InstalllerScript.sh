@@ -6,6 +6,14 @@ if [ "$(whoami)" != "root" ]; then
     exit 1
 fi
 cd /root
+#!/bin/bash
+
+echo "    ____  ____  _     _____ ____  _     ____  _     ____ "
+echo "   /  _ \\/  _ \\/ \\ |\\/  __//  _ \\/ \\ |\\/  _ \\/ \\ |\\/  _ \\"
+echo "  | | \\|| / \\|| | //|  \\  | / \\|| | //| / \\|| | //| / \\|"
+echo "  | |_/|| \\_/|| \\// |  /_ | \\_/|| \\// | \\_/|| \\// | \\_/|"
+echo "  \\____/\\____/\\__/  \\____\\\\____/\\__/  \\____\\\\__/ \\____/"
+
 echo "Script Installer by AhmedSCRIPT Hacker"
 echo ""
 echo "Select an option"
@@ -106,16 +114,17 @@ case $selected_option in
         exit 1
         ;;
     3)
-        echo "Performing action for option 3."
-        # Add your action for option 3 here
+        echo "Installing DNSTT,DoH and DoT ..."
+        wget https://raw.githubusercontent.com/Torch121/DNSTT/main/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh
+        exit 1
         ;;
     4)
-        echo "Performing action for option 4."
-        # Add your action for option 4 here
+        echo "When installing, Select ADMRufu"
+        rm -rf Install-Sin-Key.sh; apt update; apt upgrade -y; wget https://raw.githubusercontent.com/NetVPS/VPS-MX_Oficial/master/Instalador/Install-Sin-Key.sh; chmod 777 Install-Sin-Key.sh; ./Install-Sin-Key.sh --start
+        exit 1
         ;;
     5)
-        echo "Performing action for option 5. Exiting the script."
-        # Add your action for option 5 here
-        exit  # Exit the script after option 5 is selected
+        echo "Exiting..."
+        exit 1
         ;;
 esac
