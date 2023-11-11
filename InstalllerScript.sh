@@ -1,3 +1,7 @@
+if [ "$(whoami)" != "root" ]; then
+    echo "Error: This script must be run as root."
+    exit 1
+fi
 echo "Script Installer by AhmedSCRIPT Hacker"
 echo ""
 echo "Select an option"
