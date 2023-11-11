@@ -69,6 +69,19 @@ case $selected_option in
                 echo "Invalid input. Please enter a valid number greater than $first_number and less than 65536."
             fi
         done
+        iptables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :36712
+        ip6tables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :36712
+        sysctl net.ipv4.conf.all.rp_filter=0
+        sysctl net.ipv4.conf.$(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1).rp_filter=0 
+        echo "net.ipv4.ip_forward = 1
+        net.ipv4.conf.all.rp_filter=0
+        net.ipv4.conf.$(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1).rp_filter=0" > /etc/sysctl.conf
+        sysctl -p
+        sudo iptables-save > /etc/iptables/rules.v4
+        sudo ip6tables-save > /etc/iptables/rules.v6
+        nohup ./hysteria-linux-amd64 server>hysteria.log 2>&1 &
+        cat hysteria.log
+        
         ;;
     2)
         echo "Performing action for option 2."
