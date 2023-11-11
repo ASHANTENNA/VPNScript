@@ -8,12 +8,12 @@ fi
 cd /root
 #!/bin/bash
 
-echo "    ____  ____  _     _____ ____  _     ____  _     ____ "
-echo "   /  _ \\/  _ \\/ \\ |\\/  __//  _ \\/ \\ |\\/  _ \\/ \\ |\\/  _ \\"
-echo "  | | \\|| / \\|| | //|  \\  | / \\|| | //| / \\|| | //| / \\|"
-echo "  | |_/|| \\_/|| \\// |  /_ | \\_/|| \\// | \\_/|| \\// | \\_/|"
-echo "  \\____/\\____/\\__/  \\____\\\\____/\\__/  \\____\\\\__/ \\____/"
-
+echo "  A    SSS   H   H"
+echo " A A   S     H   H"
+echo "AAAAA  SSS   HHHHH"
+echo "A   A      S H   H"
+echo "A   A  SSSS  H   H"
+echo ""
 echo "Script Installer by AhmedSCRIPT Hacker"
 echo ""
 echo "Select an option"
