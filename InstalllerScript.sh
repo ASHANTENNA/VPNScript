@@ -2,6 +2,7 @@ if [ "$(whoami)" != "root" ]; then
     echo "Error: This script must be run as root."
     exit 1
 fi
+cd /root
 echo "Script Installer by AhmedSCRIPT Hacker"
 echo ""
 echo "Select an option"
@@ -37,6 +38,15 @@ case $selected_option in
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
         openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
+        file_path="/root/hy/config.json"
+        json_content='{"listen":":36712","protocol":"udp","cert":"/root/hy/ca.crt","key":"/root/hy/ca.key","up":"100 Mbps","up_mbps":100,"down":"100 Mbps","down_mbps":100,"disable_udp":false,"obfs":"ahmedscript","auth_str":"ahmedscript"}'
+        echo "$json_content" > "$file_path"
+        if [ -e "$file_path" ]; then
+            
+        else
+            echo "Error: Unable to save the config.json file"
+            exit 1
+        fi
         
         ;;
     2)
