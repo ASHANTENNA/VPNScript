@@ -115,6 +115,8 @@ case $selected_option in
         ;;
     3)
         echo "Installing DNSTT,DoH and DoT ..."
+        apt update
+        apt upgrade
         wget https://raw.githubusercontent.com/Torch121/DNSTT/main/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh
         exit 1
         ;;
