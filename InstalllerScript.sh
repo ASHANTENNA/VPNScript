@@ -81,7 +81,12 @@ case $selected_option in
         sudo ip6tables-save > /etc/iptables/rules.v6
         nohup ./hysteria-linux-amd64 server>hysteria.log 2>&1 &
         cat hysteria.log
-        
+        echo "UDP Hysteria V1.3.5 installed successfully, please check the logs above"
+        echo "IP Address :"
+        curl icanhazip.com
+        echo "Obfs : ahmedscript"
+        echo "auth str : ahmedscript"
+        exit 1
         ;;
     2)
         echo "Performing action for option 2."
