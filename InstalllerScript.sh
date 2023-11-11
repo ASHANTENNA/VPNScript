@@ -1,3 +1,6 @@
+is_number() {
+    [[ $1 =~ ^[0-9]+$ ]]
+}
 if [ "$(whoami)" != "root" ]; then
     echo "Error: This script must be run as root."
     exit 1
@@ -49,7 +52,23 @@ case $selected_option in
         fi
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
-        apt -y install iptables-persistent
+        apt -y install iptable
+        while true; do
+            read -p "Binding UDP Ports : from port : " first_number
+            if is_number "$first_number" && [ "$first_number" -ge 1 ] && [ "$first_number" -le 65534 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number between 1 and 65534."
+            fi
+        done
+        while true; do
+            read -p "Binding UDP Ports : from port : $first_number to port : " second_number
+            if is_number "$second_number" && [ "$second_number" -gt "$first_number" ] && [ "$second_number" -lt 65536 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number greater than $first_number and less than 65536."
+            fi
+        done
         ;;
     2)
         echo "Performing action for option 2."
