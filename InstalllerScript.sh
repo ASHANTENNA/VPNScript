@@ -15,7 +15,7 @@ echo "A   A      S H   H"
 echo "A   A  SSSS  H   H"
 echo ""
 echo "Script Installer by AhmedSCRIPT Hacker"
-echo ""
+echo "Version : 1.0"
 echo "Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
 echo "2. Install HTTP Proxy"
@@ -35,7 +35,7 @@ while [ $selected_option -lt 1 ] || [ $selected_option -gt 5 ]; do
         echo "Invalid input. Please enter a valid number."
     fi
 done
-# Perform actions based on the selected option outside the loop
+clear
 case $selected_option in
     1)
         echo "Installing UDP Hysteria V1.3.5 ..."
@@ -125,6 +125,7 @@ case $selected_option in
         if [ ! -e "$http_script" ]; then
             wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
         fi
+        chmod 755 sshProxy_linux_amd64
         screen -dmS ssh_proxy ./sshProxy_linux_amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
         echo "HTTP Proxy installed successfully"
         exit 1
