@@ -3,6 +3,7 @@ is_number() {
     [[ $1 =~ ^[0-9]+$ ]]
 }
 YELLOW='\033[1;33m'
+NC='\033[0m'
 if [ "$(whoami)" != "root" ]; then
     echo "Error: This script must be run as root."
     exit 1
@@ -15,9 +16,8 @@ echo "AAAAA  SSS   HHHHH"
 echo "A   A      S H   H"
 echo "A   A  SSSS  H   H"
 echo ""
-echo -e "$YELLOW
-VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 1.0"
+echo -e "${YELLOW}VPN Tunnel Installer by AhmedSCRIPT Hacker"
+echo -e "Version : 1.0${NC}"
 echo "Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
 echo "2. Install HTTP Proxy"
