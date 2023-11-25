@@ -172,29 +172,29 @@ case $selected_option in
         done
         file_path="/root/hy2/config.yaml"
         json_content=$(cat <<EOF
-listen: :$remote_udp_port
-tls:
-  cert: ca.crt
-  key: ca.key
-obfs:
-  type: salamander
-  salamander:
-    password: $obfs
-quic:
-  initStreamReceiveWindow: 16777216
-  maxStreamReceiveWindow: 16777216
-  initConnReceiveWindow: 33554432
-  maxConnReceiveWindow: 33554432
-auth:
-  type: password
-  password: $auth_str
-masquerade:
-  type: proxy
-  proxy:
-    url: https://223.5.5.5/dns-query
-    rewriteHost: true
-EOF
-)
+        listen: :$remote_udp_port
+        tls:
+          cert: ca.crt
+          key: ca.key
+        obfs:
+          type: salamander
+          salamander:
+            password: $obfs
+        quic:
+          initStreamReceiveWindow: 16777216
+          maxStreamReceiveWindow: 16777216
+          initConnReceiveWindow: 33554432
+          maxConnReceiveWindow: 33554432
+        auth:
+          type: password
+          password: $auth_str
+        masquerade:
+          type: proxy
+          proxy:
+            url: https://223.5.5.5/dns-query
+            rewriteHost: true
+        EOF
+        )
         echo "$json_content" > "$file_path"
         if [ ! -e "$file_path" ]; then
             echo "Error: Unable to save the config.json file"
