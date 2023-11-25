@@ -249,6 +249,7 @@ EOF
         echo "Obfs : '"$obfs"'"
         echo "auth str : '"$auth_stf"'"
         exit 1
+        ;;
     3)
         echo "Installing HTTP Proxy..."
         while true; do
