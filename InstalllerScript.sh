@@ -114,6 +114,9 @@ case $selected_option in
         exit 1
         ;;
     2)
+        echo "Installing UDP Hysteria V2.2.2 ..."
+        
+    3)
         echo "Installing HTTP Proxy..."
         while true; do
             read -p "Remote HTTP Port : " http_port
@@ -134,19 +137,19 @@ case $selected_option in
         echo "HTTP Proxy installed successfully"
         exit 1
         ;;
-    3)
+    4)
         echo "Installing DNSTT,DoH and DoT ..."
         apt update
         apt upgrade
         wget https://raw.githubusercontent.com/Torch121/DNSTT/main/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh
         exit 1
         ;;
-    4)
+    5)
         echo "When installing, Select ADMRufu"
         rm -rf Install-Sin-Key.sh; apt update; apt upgrade -y; wget https://raw.githubusercontent.com/NetVPS/VPS-MX_Oficial/master/Instalador/Install-Sin-Key.sh; chmod 777 Install-Sin-Key.sh; ./Install-Sin-Key.sh --start
         exit 1
         ;;
-    5)
+    6)
         echo "Exiting..."
         exit 1
         ;;
