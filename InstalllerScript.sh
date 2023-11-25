@@ -69,16 +69,6 @@ case $selected_option in
             break
             fi
         done
-        file_path="/root/hy/config.json"
-        json_content='{"listen":":36712","protocol":"udp","cert":"/root/hy/ca.crt","key":"/root/hy/ca.key","up":"100 Mbps","up_mbps":100,"down":"100 Mbps","down_mbps":100,"disable_udp":false,"obfs":"'"$obfs"'","auth_str":"'"$auth_str"'"}'
-        echo "$json_content" > "$file_path"
-        if [ ! -e "$file_path" ]; then
-            echo "Error: Unable to save the config.json file"
-            exit 1
-        fi
-        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
-        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
-        apt -y install iptables-persistent
         while true; do
             read -p "Remote UDP Port : " remote_udp_port
             if is_number "$remote_udp_port" && [ "$remote_udp_port" -ge 1 ] && [ "$remote_udp_port" -le 65534 ]; then
@@ -91,6 +81,16 @@ case $selected_option in
                 echo "Invalid input. Please enter a valid number between 1 and 65534."
             fi
         done
+        file_path="/root/hy/config.json"
+        json_content='{"listen":":'"$remote_udp_port"'","protocol":"udp","cert":"/root/hy/ca.crt","key":"/root/hy/ca.key","up":"100 Mbps","up_mbps":100,"down":"100 Mbps","down_mbps":100,"disable_udp":false,"obfs":"'"$obfs"'","auth_str":"'"$auth_str"'"}'
+        echo "$json_content" > "$file_path"
+        if [ ! -e "$file_path" ]; then
+            echo "Error: Unable to save the config.json file"
+            exit 1
+        fi
+        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
+        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
+        apt -y install iptables-persistent
         while true; do
             read -p "Binding UDP Ports : from port : " first_number
             if is_number "$first_number" && [ "$first_number" -ge 1 ] && [ "$first_number" -le 65534 ]; then
@@ -107,6 +107,11 @@ case $selected_option in
                 echo "Invalid input. Please enter a valid number greater than $first_number and less than 65536."
             fi
         done
+        #Remove old rules
+        iptables -t nat -L --line-numbers | awk -v var="$first_number:$second_number" '$0 ~ var {print $1}' | tac | xargs -r -I {} iptables -t nat -D PREROUTING {}
+        ip6tables -t nat -L --line-numbers | awk -v var="$first_number:$second_number" '$0 ~ var {print $1}' | tac | xargs -r -I {} ip6tables -t nat -D PREROUTING {}
+        
+        
         iptables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :36712
         ip6tables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :36712
         sysctl net.ipv4.conf.all.rp_filter=0
