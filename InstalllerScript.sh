@@ -247,7 +247,7 @@ EOF
         echo "IP Address :"
         curl ipv4.icanhazip.com
         echo "Obfs : '"$obfs"'"
-        echo "auth str : '"$auth_stf"'"
+        echo "auth str : '"$auth_str"'"
         exit 1
         ;;
     3)
