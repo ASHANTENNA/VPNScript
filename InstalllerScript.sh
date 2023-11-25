@@ -141,7 +141,7 @@ case $selected_option in
         cd hy2
         udp_script="/root/hy2/hysteria-linux-amd64"
         if [ ! -e "$udp_script" ]; then
-            wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
+            wget github.com/apernet/hysteria/releases/download/v2.2.2/hysteria-linux-amd64
         fi
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
