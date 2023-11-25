@@ -72,7 +72,7 @@ case $selected_option in
         while true; do
             read -p "Remote UDP Port : " remote_udp_port
             if is_number "$remote_udp_port" && [ "$remote_udp_port" -ge 1 ] && [ "$remote_udp_port" -le 65534 ]; then
-                if iptables -t nat -L --line-numbers | grep -q "::36712"; then
+                if iptables -t nat -L --line-numbers | grep -q "::'"$remote_udp_port"'"; then
                     echo "Error : the selected port has already been used"
                 else
                     break
@@ -126,14 +126,129 @@ case $selected_option in
         cat hysteria.log
         echo "UDP Hysteria V1.3.5 installed successfully, please check the logs above"
         echo "IP Address :"
-        curl icanhazip.com
-        echo "Obfs : ahmedscript"
-        echo "auth str : ahmedscript"
+        curl ipv4.icanhazip.com
+        echo "Obfs : '"$obfs"'"
+        echo "auth str : '"$auth_str"'"
         exit 1
         ;;
     2)
         echo "Installing UDP Hysteria V2.2.2 ..."
+        apt-get update && apt-get upgrade
+        apt install wget -y
+        apt install nano -y
+        apt install net-tools
+        mkdir hy2
+        cd hy2
+        udp_script="/root/hy2/hysteria-linux-amd64"
+        if [ ! -e "$udp_script" ]; then
+            wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
+        fi
+        chmod 755 hysteria-linux-amd64
+        openssl ecparam -genkey -name prime256v1 -out ca.key
+        openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
+        while true; do
+            read -p "Obfs : " obfs
+            if [ ! -z "$obfs" ]; then
+            break
+            fi
+        done
+        while true; do
+            read -p "Auth Str : " auth_str
+            if [ ! -z "$auth_str" ]; then
+            break
+            fi
+        done
+        while true; do
+            read -p "Remote UDP Port : " remote_udp_port
+            if is_number "$remote_udp_port" && [ "$remote_udp_port" -ge 1 ] && [ "$remote_udp_port" -le 65534 ]; then
+                if iptables -t nat -L --line-numbers | grep -q "::'"$remote_udp_port"'"; then
+                    echo "Error : the selected port has already been used"
+                else
+                    break
+                fi
+            else
+                echo "Invalid input. Please enter a valid number between 1 and 65534."
+            fi
+        done
+        file_path="/root/hy2/config.yaml"
+        json_content=$(cat <<EOF
+listen: :$remote_udp_port
+tls:
+  cert: ca.crt
+  key: ca.key
+obfs:
+  type: salamander
+  salamander:
+    password: $obfs
+quic:
+  initStreamReceiveWindow: 16777216
+  maxStreamReceiveWindow: 16777216
+  initConnReceiveWindow: 33554432
+  maxConnReceiveWindow: 33554432
+auth:
+  type: password
+  password: $auth_str
+masquerade:
+  type: proxy
+  proxy:
+    url: https://223.5.5.5/dns-query
+    rewriteHost: true
+EOF
+)
+        echo "$json_content" > "$file_path"
+        if [ ! -e "$file_path" ]; then
+            echo "Error: Unable to save the config.json file"
+            exit 1
+        fi
         
+        while true; do
+            read -p "Binding UDP Ports : from port : " first_number
+            if is_number "$first_number" && [ "$first_number" -ge 1 ] && [ "$first_number" -le 65534 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number between 1 and 65534."
+            fi
+        done
+        while true; do
+            read -p "Binding UDP Ports : from port : $first_number to port : " second_number
+            if is_number "$second_number" && [ "$second_number" -gt "$first_number" ] && [ "$second_number" -lt 65536 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number greater than $first_number and less than 65536."
+            fi
+        done
+        
+        warpv6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+        warpv4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+        [[ $warpv4 =~ on|plus || $warpv6 =~ on|plus ]]
+        wg-quick down wgcf >/dev/null 2>&1
+        systemctl stop warp-go >/dev/null 2>&1
+        systemctl start warp-go >/dev/null 2>&1
+        wg-quick up wgcf >/dev/null 2>&1
+
+        #Remove old rules
+        iptables -t nat -L --line-numbers | awk -v var="$first_number:$second_number" '$0 ~ var {print $1}' | tac | xargs -r -I {} iptables -t nat -D PREROUTING {}
+        ip6tables -t nat -L --line-numbers | awk -v var="$first_number:$second_number" '$0 ~ var {print $1}' | tac | xargs -r -I {} ip6tables -t nat -D PREROUTING {}
+        
+        
+        iptables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :36712
+        ip6tables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :36712
+        sysctl net.ipv4.conf.all.rp_filter=0
+        sysctl net.ipv4.conf.$(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1).rp_filter=0 
+        echo "net.ipv4.ip_forward = 1
+        net.ipv4.conf.all.rp_filter=0
+        net.ipv4.conf.$(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1).rp_filter=0" > /etc/sysctl.conf
+        sysctl -p
+        sudo iptables-save > /etc/iptables/rules.v4
+        sudo ip6tables-save > /etc/iptables/rules.v6
+        nohup ./hysteria-linux-amd64 server>hysteria.log 2>&1 &
+        cat hysteria.log
+        echo "UDP Hysteria V2.2.2 installed successfully, please check the logs above"
+        echo "IP Address :"
+        curl ipv4.icanhazip.com
+        echo "Obfs : '"$obfs"'"
+        echo "auth str : '"$auth_stf"'"
+        exit 1
     3)
         echo "Installing HTTP Proxy..."
         while true; do
