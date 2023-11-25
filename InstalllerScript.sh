@@ -22,10 +22,11 @@ echo "Version : 1.0"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
-echo "2. Install HTTP Proxy"
-echo "3. Install DNSTT, DoH and DoT"
-echo "4. Install ADMRufu MOD"
-echo "5. Exit"
+echo "2. Install UDP Hysteria V2.2.2"
+echo "3. Install HTTP Proxy"
+echo "4. Install DNSTT, DoH and DoT"
+echo "5. Install ADMRufu MOD"
+echo "6. Exit"
 selected_option=0
 
 while [ $selected_option -lt 1 ] || [ $selected_option -gt 5 ]; do
