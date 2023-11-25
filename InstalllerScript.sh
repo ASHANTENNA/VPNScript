@@ -18,7 +18,7 @@ echo "A   A  SSSS  H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 1.0"
+echo "Version : 2.0"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
