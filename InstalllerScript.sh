@@ -72,7 +72,7 @@ case $selected_option in
         while true; do
             read -p "Remote UDP Port : " remote_udp_port
             if is_number "$remote_udp_port" && [ "$remote_udp_port" -ge 1 ] && [ "$remote_udp_port" -le 65534 ]; then
-                if iptables -t nat -L --line-numbers | grep -q "::$remote_udp_port"; then
+                if netstat -tulnp | grep -q "::$remote_udp_port"; then
                     echo "Error : the selected port has already been used"
                 else
                     break
@@ -161,7 +161,7 @@ case $selected_option in
         while true; do
             read -p "Remote UDP Port : " remote_udp_port
             if is_number "$remote_udp_port" && [ "$remote_udp_port" -ge 1 ] && [ "$remote_udp_port" -le 65534 ]; then
-                if iptables -t nat -L --line-numbers | grep -q "::$remote_udp_port"; then
+                if netstat -tulnp | grep -q "::$remote_udp_port"; then
                     echo "Error : the selected port has already been used"
                 else
                     break
