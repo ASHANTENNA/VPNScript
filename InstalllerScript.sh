@@ -80,6 +80,18 @@ case $selected_option in
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
         apt -y install iptables-persistent
         while true; do
+            read -p "Remote UDP Port : " remote_udp_port
+            if is_number "$remote_udp_port" && [ "$remote_udp_port" -ge 1 ] && [ "$remote_udp_port" -le 65534 ]; then
+                if iptables -t nat -L --line-numbers | grep -q "::36712"; then
+                    echo "Error : the selected port has already been used"
+                else
+                    break
+                fi
+            else
+                echo "Invalid input. Please enter a valid number between 1 and 65534."
+            fi
+        done
+        while true; do
             read -p "Binding UDP Ports : from port : " first_number
             if is_number "$first_number" && [ "$first_number" -ge 1 ] && [ "$first_number" -le 65534 ]; then
                 break
