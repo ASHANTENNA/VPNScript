@@ -29,7 +29,7 @@ echo "5. Install ADMRufu MOD"
 echo "6. Exit"
 selected_option=0
 
-while [ $selected_option -lt 1 ] || [ $selected_option -gt 5 ]; do
+while [ $selected_option -lt 1 ] || [ $selected_option -gt 6 ]; do
     echo "Select a number from 1 to 5:"
     read input
 
