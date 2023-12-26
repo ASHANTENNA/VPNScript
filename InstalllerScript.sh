@@ -332,7 +332,7 @@ EOF
         echo "$json_content" > "$file_path"
         dns2tcpd -d 3 -f dns2tcpdrc
         lsof -i :53
-        echo "DNS2TCP server installed
+        echo "DNS2TCP server installed"
         ;;
     7)
         echo "Exiting..."
