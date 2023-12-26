@@ -318,17 +318,7 @@ EOF
         mkdir /var/empty/dns2tcp
         read -p "Your Nameserver : " $nameserver
         read -p "Your key : " $key
-        file_path="/root/dns2tcp/dns2tcpdrc"
-        json_content=$(cat <<-EOF
-        listen = 0.0.0.0
-        port = 53
-        user = ashtunnel
-        chroot = /var/empty/dns2tcp/
-        domain = $nameserver
-        key = $key
-        resources = ssh:127.0.0.1:22
-    EOF
-    )
+        
         echo "$json_content" > "$file_path"
         dns2tcpd -d 3 -f dns2tcpdrc
         lsof -i :53
