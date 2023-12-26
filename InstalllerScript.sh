@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 is_number() {
     [[ $1 =~ ^[0-9]+$ ]]
 }
@@ -316,6 +316,7 @@ EOF
         cd dns2tcp
         mkdir /var/empty
         mkdir /var/empty/dns2tcp
+        adduser ashtunnel
         read -p "Your Nameserver: " nameserver
         read -p "Your key: " key
         file_path="/root/dns2tcp/dns2tcpdrc"
