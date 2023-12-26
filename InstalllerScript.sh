@@ -303,6 +303,19 @@ EOF
         ;;
     6)
         read -p "Before you continue, make sure that there is no program uses the UDP Port 53, make sure that the DNSTT is closed, and make sure that iptables doesn't forward the UDP Port 53 to another port"
+        read -p "In this step, you will uncomment DNS and write DNS=1.1.1.1 and uncomment DNSStubListener and write DNSStubListener=no"
+        nano /etc/systemd/resolved.conf
+        read -p "by tapping 'Enter', you make sure that you have uncomment DNS=1.1.1.1 and DNSStubListener=no"
+        if lsof -i :53 | grep -q ":53"; then
+            echo "Error : there is a program that already uses the port 53"
+            exit 1
+        fi
+        systemctl restart systemd-resolved
+        apt-get install dns2tcp
+        mkdir dns2tcp
+        cd dns2tcp
+        mkdir /var/empty
+        mkdir /var/empty/dns2tcp
         
         ;;
     7)
