@@ -302,7 +302,7 @@ EOF
         exit 1
         ;;
     6)
-        read -p "Before you continue, make sure that there is no program uses the UDP Port 53, make sure that the DNSTT is closed, and make sure that iptables doesn't forward the UDP Port 53 to another port"
+        read -p "Before you continue, make sure that there is no program uses the UDP Port 53, make sure that the DNSTT or iodine is closed, and make sure that iptables doesn't forward the UDP Port 53 to another port"
         read -p "In this step, you will uncomment DNS and write DNS=1.1.1.1 and uncomment DNSStubListener and write DNSStubListener=no"
         nano /etc/systemd/resolved.conf
         read -p "by tapping 'Enter', you make sure that you have uncomment DNS=1.1.1.1 and DNSStubListener=no"
@@ -316,7 +316,23 @@ EOF
         cd dns2tcp
         mkdir /var/empty
         mkdir /var/empty/dns2tcp
-        
+        read -p "Your Nameserver : " $nameserver
+        read -p "Your key : " $key
+        file_path="/root/dns2tcp/dns2tcpdrc"
+        json_content=$(cat <<-EOF
+    listen = 0.0.0.0
+    port = 53
+    user = ashtunnel
+    chroot = /var/empty/dns2tcp/
+    domain = $nameserver
+    key = $key
+    resources = ssh:127.0.0.1:22
+EOF
+)
+        echo "$json_content" > "$file_path"
+        dns2tcpd -d 3 -f dns2tcpdrc
+        lsof -i :53
+        echo "DNS2TCP server installed
         ;;
     7)
         echo "Exiting..."
