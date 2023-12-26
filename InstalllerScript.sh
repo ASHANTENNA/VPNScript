@@ -18,7 +18,7 @@ echo "A   A  SSSS  H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 2.0"
+echo "Version : 2.5"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -26,10 +26,11 @@ echo "2. Install UDP Hysteria V2.2.2"
 echo "3. Install HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install ADMRufu MOD"
-echo "6. Exit"
+echo "6. Install DNS2TCP"
+echo "7. Exit"
 selected_option=0
 
-while [ $selected_option -lt 1 ] || [ $selected_option -gt 6 ]; do
+while [ $selected_option -lt 1 ] || [ $selected_option -gt 7 ]; do
     echo "Select a number from 1 to 7:"
     read input
 
@@ -301,6 +302,10 @@ EOF
         exit 1
         ;;
     6)
+        read -p "Before you continue, make sure that there is no program uses the UDP Port 53, make sure that the DNSTT is closed, and make sure that iptables doesn't forward the UDP Port 53 to another port"
+        
+        ;;
+    7)
         echo "Exiting..."
         exit 1
         ;;
