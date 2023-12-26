@@ -30,7 +30,7 @@ echo "6. Exit"
 selected_option=0
 
 while [ $selected_option -lt 1 ] || [ $selected_option -gt 6 ]; do
-    echo "Select a number from 1 to 5:"
+    echo "Select a number from 1 to 7:"
     read input
 
     # Check if input is a number
@@ -260,6 +260,22 @@ EOF
                 echo "Invalid input. Please enter a valid number between 1 and 65535."
             fi
         done
+        while true; do
+            read -p "Binding TCP Ports : from port : " first_number
+            if is_number "$first_number" && [ "$first_number" -ge 1 ] && [ "$first_number" -le 65534 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number between 1 and 65534."
+            fi
+        done
+        while true; do
+            read -p "Binding TCP Ports : from port : $first_number to port : " second_number
+            if is_number "$second_number" && [ "$second_number" -gt "$first_number" ] && [ "$second_number" -lt 65536 ]; then
+                break
+            else
+                echo "Invalid input. Please enter a valid number greater than $first_number and less than 65536."
+            fi
+        done
         mkdir tcp
         cd tcp
         http_script="/root/tcp/sshProxy_linux_amd64"
@@ -268,6 +284,7 @@ EOF
         fi
         chmod 755 sshProxy_linux_amd64
         screen -dmS ssh_proxy ./sshProxy_linux_amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
+        iptables -t nat -A PREROUTING -p tcp --dport "$first_number":"$second_number" -j REDIRECT --to-port "$http_port"
         echo "HTTP Proxy installed successfully"
         exit 1
         ;;
