@@ -293,7 +293,19 @@ EOF
         echo "Installing DNSTT,DoH and DoT ..."
         apt update
         apt upgrade
-        wget https://raw.githubusercontent.com/Torch121/DNSTT/main/installer.sh -O installer.sh && chmod +x installer.sh && ./installer.sh
+        apt install -y git golang-go
+        git clone https://www.bamsoftware.com/git/dnstt.git
+        cd dnstt/dnstt-server
+        go build
+        ./dnstt-server -gen-key -privkey-file server.key -pubkey-file server.pub
+        cat server.pub
+        echo -e "Copy the pubkey above and press Enter when done"
+        read -p "Enter your Nameserver : " ns
+        iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+        iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
+        screen -dmS slowdns ./dnstt-server -udp :5300 -privkey-file server.key $ns 127.0.0.1:22
+        lsof -i :5300
+        echo -e "DNSTT installation completed"
         exit 1
         ;;
     5)
