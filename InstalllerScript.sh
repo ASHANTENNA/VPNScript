@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 is_number() {
     [[ $1 =~ ^[0-9]+$ ]]
 }
@@ -431,7 +431,7 @@ resources = ssh:127.0.0.1:22
 EOF
 )
         echo "$json_content" > "$file_path"
-        dns2tcpd -d 3 -f dns2tcpdrc
+        dns2tcpd -d 1 -f dns2tcpdrc
         lsof -i :53
         echo -e "$YELLOW"
         echo "DNS2TCP server installed"
