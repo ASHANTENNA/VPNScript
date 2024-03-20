@@ -18,7 +18,7 @@ echo "A   A  SSSS  H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 2.7"
+echo "Version : 2.8"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -317,7 +317,9 @@ EOF
                 echo -e "$NC"
             fi
         done
-        while true; do
+        read -p "Bind multiple TCP Ports? (y/n): " bind
+        if [ "$bind" = "y" ]; then
+            while true; do
             echo -e "$YELLOW"
             read -p "Binding TCP Ports : from port : " first_number
             echo -e "$NC"
@@ -341,6 +343,7 @@ EOF
                 echo -e "$NC"
             fi
         done
+        fi
         mkdir tcp
         cd tcp
         http_script="/root/tcp/sshProxy_linux_amd64"
