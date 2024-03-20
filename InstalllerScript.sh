@@ -343,6 +343,7 @@ EOF
                 echo -e "$NC"
             fi
         done
+        iptables -t nat -A PREROUTING -p tcp --dport "$first_number":"$second_number" -j REDIRECT --to-port "$http_port"
         fi
         mkdir tcp
         cd tcp
@@ -352,7 +353,6 @@ EOF
         fi
         chmod 755 sshProxy_linux_amd64
         screen -dmS ssh_proxy ./sshProxy_linux_amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
-        iptables -t nat -A PREROUTING -p tcp --dport "$first_number":"$second_number" -j REDIRECT --to-port "$http_port"
         lsof -i :"$http_port"
         echo -e "$YELLOW"
         echo "HTTP Proxy installed successfully"
