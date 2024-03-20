@@ -317,7 +317,9 @@ EOF
                 echo -e "$NC"
             fi
         done
+        echo -e "$YELLOW"
         read -p "Bind multiple TCP Ports? (y/n): " bind
+        echo -e "$NC"
         if [ "$bind" = "y" ]; then
             while true; do
             echo -e "$YELLOW"
