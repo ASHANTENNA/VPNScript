@@ -22,7 +22,7 @@ echo "Version : 2.7"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
-echo "2. Install UDP Hysteria V2.2.2"
+echo "2. Install UDP Hysteria V2.3.0"
 echo "3. Install HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install ADMRufu MOD"
@@ -160,7 +160,7 @@ case $selected_option in
         ;;
     2)
         echo -e "$YELLOW"
-        echo "Installing UDP Hysteria V2.2.2 ..."
+        echo "Installing UDP Hysteria V2.3.0 ..."
         echo -e "$NC"
         apt-get update && apt-get upgrade
         apt install wget -y
@@ -170,7 +170,7 @@ case $selected_option in
         cd hy2
         udp_script="/root/hy2/hysteria-linux-amd64"
         if [ ! -e "$udp_script" ]; then
-            wget github.com/apernet/hysteria/releases/download/app/v2.2.2/hysteria-linux-amd64
+            wget github.com/apernet/hysteria/releases/download/app/v2.3.0/hysteria-linux-amd64
         fi
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
@@ -293,7 +293,7 @@ EOF
         nohup ./hysteria-linux-amd64 server>hysteria.log 2>&1 &
         lsof -i :"$remote_udp_port"
         echo -e "$YELLOW"
-        echo "UDP Hysteria V2.2.2 installed successfully, please check the logs above"
+        echo "UDP Hysteria V2.3.0 installed successfully, please check the logs above"
         echo "IP Address :"
         curl ipv4.icanhazip.com
         echo "Obfs : '"$obfs"'"
