@@ -27,12 +27,13 @@ echo "3. Install HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install ADMRufu MOD"
 echo "6. Install DNS2TCP"
-echo "7. Exit"
+echo "7. Install Python 2"
+echo "8. Exit"
 selected_option=0
 
-while [ $selected_option -lt 1 ] || [ $selected_option -gt 7 ]; do
+while [ $selected_option -lt 1 ] || [ $selected_option -gt 8 ]; do
     echo -e "$YELLOW"
-    echo "Select a number from 1 to 7:"
+    echo "Select a number from 1 to 8:"
     echo -e "$NC"
     read input
 
@@ -443,6 +444,19 @@ EOF
         echo -e "$NC"
         ;;
     7)
+        echo -e "$YELLOW"
+        echo "Installing Python 2 ..."
+        echo -e "$NC"
+        wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+        tar -xzf Python-2.7.18.tgz
+        cd Python-2.7.18
+        ./configure
+        make install
+        echo -e "$YELLOW"
+        echo "Python 2 Installed Successfully"
+        echo -e "$NC"
+        ;;
+    8)
         echo -e "$YELLOW"
         echo "Good Bye"
         echo -e "$NC"
