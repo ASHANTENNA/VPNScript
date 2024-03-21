@@ -372,7 +372,8 @@ EOF
         git clone https://www.bamsoftware.com/git/dnstt.git
         cd dnstt/dnstt-server
         go build
-        ./dnstt-server -gen-key -privkey-file server.key -pubkey-file server.pub
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/server.key
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/server.pub
         echo -e "$YELLOW"
         cat server.pub
         read -p "Copy the pubkey above and press Enter when done"
