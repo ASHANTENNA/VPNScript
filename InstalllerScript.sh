@@ -25,7 +25,7 @@ echo "1. Install UDP Hysteria V1.3.5"
 echo "2. Install UDP Hysteria V2.3.0"
 echo "3. Install HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
-echo "5. Install ADMRufu MOD"
+echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
 echo "7. Exit"
 selected_option=0
@@ -371,6 +371,12 @@ EOF
         git clone https://www.bamsoftware.com/git/dnstt.git
         cd dnstt/dnstt-server
         go build
+        if [ ! -e "server.key" ]; then
+            rm server.key
+        fi
+        if [ ! -e "server.pub" ]; then
+            rm server.pub
+        fi
         wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/server.key
         wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/server.pub
         echo -e "$YELLOW"
@@ -387,9 +393,9 @@ EOF
         ;;
     5)
         echo -e "$YELLOW"
-        echo "While installing, Select ADMRufu"
+        echo "While installing, Select x8.5"
         echo -e "$NC"
-        rm -rf Install-Sin-Key.sh; apt update; apt upgrade -y; wget https://raw.githubusercontent.com/NetVPS/VPS-MX_Oficial/master/Instalador/Install-Sin-Key.sh; chmod 777 Install-Sin-Key.sh; ./Install-Sin-Key.sh --start
+        rm -rf install-without-key.sh; apt update; apt install curl; apt install bc; wget https://github.com/khaledagn/VPS-AGN_English_Official/raw/main/installer/install-without-key.sh; chmod 777 install-without-key.sh; ./install-without-key.sh --start
         exit 1
         ;;
     6)
