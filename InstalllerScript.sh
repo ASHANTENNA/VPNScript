@@ -370,6 +370,7 @@ EOF
         mkdir dnstt
         cd dnstt
         wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/dnstt-server
+        chmod 755 dnstt-server
         if [ -e "server.key" ]; then
             rm server.key
         fi
