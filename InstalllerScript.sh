@@ -367,14 +367,13 @@ EOF
         echo -e "$NC"
         apt update
         apt upgrade
-        apt install -y git golang-go
-        git clone https://www.bamsoftware.com/git/dnstt.git
-        cd dnstt/dnstt-server
-        go build
-        if [ ! -e "server.key" ]; then
+        mkdir dnstt
+        cd dnstt
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/dnstt-server
+        if [ -e "server.key" ]; then
             rm server.key
         fi
-        if [ ! -e "server.pub" ]; then
+        if [ -e "server.pub" ]; then
             rm server.pub
         fi
         wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/server.key
