@@ -18,7 +18,7 @@ echo "A   A  SSSS  H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 2.8"
+echo "Version : 2.9"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -446,7 +446,7 @@ EOF
         dns2tcpd -d 1 -f dns2tcpdrc
         lsof -i :53
         echo -e "$YELLOW"
-        read "in the next step, add nameserver 8.8.8.8 to the coming file if there is only nameserver 127.0.0.1 or nameserver 127.0.0.53"
+        read -p "in the next step, add nameserver 8.8.8.8 to the coming file if there is only nameserver 127.0.0.1 or nameserver 127.0.0.53"
         echo -e "$NC"
         nano /etc/resolv.conf
         echo -e "$YELLOW"
