@@ -23,7 +23,7 @@ echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
 echo "2. Install UDP Hysteria V2.3.0"
-echo "3. Install HTTP Proxy"
+echo "3. Install ASH HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
@@ -303,7 +303,7 @@ EOF
         ;;
     3)
         echo -e "$YELLOW"
-        echo "Installing HTTP Proxy..."
+        echo "Installing ASH HTTP Proxy..."
         echo -e "$NC"
         while true; do
             echo -e "$YELLOW"
@@ -347,17 +347,18 @@ EOF
         done
         iptables -t nat -A PREROUTING -p tcp --dport "$first_number":"$second_number" -j REDIRECT --to-port "$http_port"
         fi
-        mkdir tcp
-        cd tcp
-        http_script="/root/tcp/sshProxy_linux_amd64"
+        mkdir ashhttp
+        cd ashhttp
+        http_script="/root/ashhttp/ashhtttpproxy-linux-amd64"
         if [ ! -e "$http_script" ]; then
-            wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
+            #wget https://github.com/CassianoDev/sshProxy/releases/download/v1.1/sshProxy_linux_amd64
+            wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashhttpproxy-linux-amd64
         fi
-        chmod 755 sshProxy_linux_amd64
-        screen -dmS ssh_proxy ./sshProxy_linux_amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
+        chmod 755 ashhttpproxy-linux-amd64
+        screen -dmS ashhttp ./ashhttpproxy-linux-amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
         lsof -i :"$http_port"
         echo -e "$YELLOW"
-        echo "HTTP Proxy installed successfully"
+        echo "ASH HTTP Proxy installed successfully"
         echo -e "$NC"
         exit 1
         ;;
@@ -369,7 +370,9 @@ EOF
         apt upgrade
         mkdir dnstt
         cd dnstt
-        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/dnstt-server
+        if [ ! -e "dnstt-server" ]; then
+            wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/dnstt-server
+        fi
         chmod 755 dnstt-server
         if [ -e "server.key" ]; then
             rm server.key
