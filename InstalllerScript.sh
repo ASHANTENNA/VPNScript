@@ -149,7 +149,7 @@ case $selected_option in
         sysctl -p
         sudo iptables-save > /etc/iptables/rules.v4
         sudo ip6tables-save > /etc/iptables/rules.v6
-        nohup ./hysteria-linux-amd64 server --log-level 0>hysteria.log 4>&1 &
+        screen -dmS hy ./hysteria-linux-amd64 server --log-level 0
         lsof -i :"$remote_udp_port"
         echo "UDP Hysteria V1.3.5 installed successfully, please check the logs above"
         echo "IP Address :"
@@ -290,7 +290,7 @@ EOF
         sysctl -p
         sudo iptables-save > /etc/iptables/rules.v4
         sudo ip6tables-save > /etc/iptables/rules.v6
-        nohup ./hysteria-linux-amd64 server --log-level 0>hysteria.log 2>&1 &
+        screen -dmS hy2 ./hysteria-linux-amd64 server --log-level 0
         lsof -i :"$remote_udp_port"
         echo -e "$YELLOW"
         echo "UDP Hysteria V2.3.0 installed successfully, please check the logs above"
