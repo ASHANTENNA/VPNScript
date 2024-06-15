@@ -3,6 +3,9 @@ is_number() {
     [[ $1 =~ ^[0-9]+$ ]]
 }
 YELLOW='\033[1;33m'
+RED='\033[1;31m'
+CYAN='\033[1;36m'
+GREEN='\033[1;32m'
 NC='\033[0m'
 if [ "$(whoami)" != "root" ]; then
     echo "Error: This script must be run as root."
@@ -10,11 +13,11 @@ if [ "$(whoami)" != "root" ]; then
 fi
 cd /root
 clear
-echo "  A    SSS   H   H"
-echo " A A   S     H   H"
-echo "AAAAA  SSS   HHHHH"
-echo "A   A      S H   H"
-echo "A   A  SSSS  H   H"
+echo -e "$CYAN   A   $YELLOW SSS  $RED H   H"
+echo -e "$CYAN  A A  $YELLOW S    $RED H   H"
+echo -e "$CYAN AAAAA $YELLOW SSS  $RED HHHHH"
+echo -e "$CYAN A   A $YELLOW     S$RED H   H"
+echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
