@@ -21,7 +21,7 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 3.0"
+echo "Version : 3.1"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -30,10 +30,11 @@ echo "3. Install ASH HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
-echo "7. Exit"
+echo "7. Install WS"
+echo "8. Exit"
 selected_option=0
 
-while [ $selected_option -lt 1 ] || [ $selected_option -gt 7 ]; do
+while [ $selected_option -lt 1 ] || [ $selected_option -gt 8 ]; do
     echo -e "$YELLOW"
     echo "Select a number from 1 to 7:"
     echo -e "$NC"
@@ -458,10 +459,28 @@ EOF
         echo -e "$YELLOW"
         read -p "by tapping 'Enter', you make sure that you have added nameserver 8.8.8.8"
         echo -e "$YELLOW"
-        echo "DNS2TCP server installed"
+        echo "DNS2TCP server installed sucessfully"
         echo -e "$NC"
         ;;
     7)
+        echo -e "$YELLOW"
+        echo "Installing WS..."
+        echo "You should change the WS listening port to 8080"
+        echo -e "$NC"
+        wget https://raw.githubusercontent.com/khaledagn/AGN-SSH-Websocket-VPN/main/install.sh -O ws.sh
+        chmod +x ws.sh
+        ./ws.sh
+        echo -e "$YELLOW"
+        read -p "Bind port 80 too ? (y/n): " bind
+        echo -e "$NC"
+        if [ "$bind" = "y" ]; then
+            iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+        fi
+        echo -e "$YELLOW"
+        echo "WS installed sucessfully"
+        echo -e "$NC"
+        ;;
+    8)
         echo -e "$YELLOW"
         echo "Good Bye"
         echo -e "$NC"
