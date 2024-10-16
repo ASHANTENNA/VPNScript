@@ -537,7 +537,7 @@ Description=Daemonize DNS2TCP Tunnel Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/usr/bin/dns2tcpd -d 1 -f /root/dns2tcp/dns2tcpdrc
+ExecStart=/usr/bin/dns2tcpd -d 1 -F -f /root/dns2tcp/dns2tcpdrc
 Restart=always
 RestartSec=3
 [Install]
