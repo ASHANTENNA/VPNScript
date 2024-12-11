@@ -603,6 +603,7 @@ EOF
         echo "$json_content" > /etc/systemd/system/badvpn.service
         systemctl start badvpn
         systemctl enable badvpn
+        echo -e "$YELLOW"
         echo "BadVPN UDPGW Installed Successfully"
         echo -e "$NC"
         exit 1
