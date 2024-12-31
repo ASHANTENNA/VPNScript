@@ -574,6 +574,7 @@ EOF
         if [ "$bind" = "y" ]; then
             iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
         fi
+        websocket menu
         echo -e "$YELLOW"
         echo "WS installed sucessfully"
         echo -e "$NC"
