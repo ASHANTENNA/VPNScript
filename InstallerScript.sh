@@ -509,7 +509,6 @@ EOF
         cd dns2tcp
         mkdir /var/empty
         mkdir /var/empty/dns2tcp
-        adduser ashtunnel
         echo -e "$YELLOW"
         read -p "Your Nameserver: " nameserver
         read -p "Your key: " key
