@@ -153,8 +153,8 @@ case $selected_option in
         net.ipv4.conf.all.rp_filter=0
         net.ipv4.conf.$(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1).rp_filter=0" > /etc/sysctl.conf
         sysctl -p
-        sudo iptables-save > /etc/iptables/rules.v4
-        sudo ip6tables-save > /etc/iptables/rules.v6
+        iptables-save > /etc/iptables/rules.v4
+        ip6tables-save > /etc/iptables/rules.v6
         echo -e "$YELLOW"
         read -p "Run in background or foreground service ? (b/f): " bind
         echo -e "$NC"
@@ -297,8 +297,8 @@ EOF
             ip6tables -t nat -L --line-numbers | awk -v var="$first_number:$second_number" '$0 ~ var {print $1}' | tac | xargs -r -I {} ip6tables -t nat -D PREROUTING {}
             iptables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :$remote_udp_port
             ip6tables -t nat -A PREROUTING -i $(ip -4 route ls|grep default|grep -Po '(?<=dev )(\S+)'|head -1) -p udp --dport "$first_number":"$second_number" -j DNAT --to-destination :$remote_udp_port
-            sudo iptables-save > /etc/iptables/rules.v4
-            sudo ip6tables-save > /etc/iptables/rules.v6
+            iptables-save > /etc/iptables/rules.v4
+            ip6tables-save > /etc/iptables/rules.v6
         fi
         
         warpv6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
@@ -395,6 +395,7 @@ EOF
                 fi
             done
             iptables -t nat -A PREROUTING -p tcp --dport "$first_number":"$second_number" -j REDIRECT --to-port "$http_port"
+            iptables-save > /etc/iptables/rules.v4
         fi
         rm -r ashhttp
         mkdir ashhttp
@@ -450,6 +451,7 @@ EOF
         read -p "Enter your Nameserver : " ns
         iptables -I INPUT -p udp --dport 5300 -j ACCEPT
         iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
+        iptables-save > /etc/iptables/rules.v4
 
         echo -e "$YELLOW"
         read -p "Run in background or foreground service ? (b/f): " bind
@@ -573,6 +575,7 @@ EOF
         echo -e "$NC"
         if [ "$bind" = "y" ]; then
             iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+            iptables-save > /etc/iptables/rules.v4
         fi
         websocket menu
         echo -e "$YELLOW"
