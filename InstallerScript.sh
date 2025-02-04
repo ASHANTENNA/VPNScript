@@ -597,7 +597,7 @@ Description=Daemonize BadVPN UDPGW Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/root/badvpn/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 1000 --max-connections-for-client 10 --loglevel 0 --channel-loglevel 0
+ExecStart=/root/badvpn/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 1000 --max-connections-for-client 10 --loglevel 0
 Restart=always
 RestartSec=3
 [Install]
