@@ -592,12 +592,6 @@ EOF
         systemctl start ashwebsocket
         systemctl enable ashwebsocket
 
-        lsof -i :8080
-        echo -e "$YELLOW"
-        echo "ASH Websocket installed successfully"
-        echo -e "$NC"
-        exit 1
-
         echo -e "$YELLOW"
         read -p "Bind port 80 too ? (y/n): " bind
         echo -e "$NC"
@@ -605,6 +599,7 @@ EOF
             iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
             iptables-save > /etc/iptables/rules.v4
         fi
+        lsof -i :8080
         echo -e "$YELLOW"
         echo "WS installed sucessfully"
         echo -e "$NC"
