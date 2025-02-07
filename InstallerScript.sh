@@ -21,7 +21,7 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 4.2"
+echo "Version : 4.3"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -30,7 +30,7 @@ echo "3. Install ASH HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
-echo "7. Install WS"
+echo "7. Install WS(port 8080)"
 echo "8. Install BadVPN UDPGW(port 7300)"
 echo "9. Install SSL"
 echo "0. Exit"
@@ -57,10 +57,8 @@ case $selected_option in
         echo -e "$YELLOW"
         echo "Installing UDP Hysteria V1.3.5 ..."
         echo -e "$NC"
-        apt-get update && apt-get upgrade
-        apt install wget -y
-        apt install nano -y
-        apt install net-tools
+        apt -y update && apt -y upgrade
+        apt -y install wget nano net-tools openssl iptables-persistent screen lsof
         mkdir hy
         cd hy
         udp_script="/root/hy/hysteria-linux-amd64"
@@ -109,7 +107,6 @@ case $selected_option in
         fi
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
         sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
-        apt -y install iptables-persistent
 
         echo -e "$YELLOW"
         read -p "Bind multiple UDP Ports? (y/n): " bind
@@ -190,10 +187,8 @@ EOF
         echo -e "$YELLOW"
         echo "Installing UDP Hysteria V2.3.0 ..."
         echo -e "$NC"
-        apt-get update && apt-get upgrade
-        apt install wget -y
-        apt install nano -y
-        apt install net-tools
+        apt -y update && apt -y upgrade
+        apt -y install wget nano net-tools openssl iptables-persistent screen lsof
         mkdir hy2
         cd hy2
         udp_script="/root/hy2/hysteria-linux-amd64"
@@ -354,6 +349,8 @@ EOF
         echo -e "$YELLOW"
         echo "Installing ASH HTTP Proxy..."
         echo -e "$NC"
+        apt -y update && apt -y upgrade
+        apt -y install iptables-persistent wget screen lsof
         while true; do
             echo -e "$YELLOW"
             read -p "Remote HTTP Port : " http_port
@@ -397,7 +394,7 @@ EOF
             iptables -t nat -A PREROUTING -p tcp --dport "$first_number":"$second_number" -j REDIRECT --to-port "$http_port"
             iptables-save > /etc/iptables/rules.v4
         fi
-        rm -r ashhttp
+        rm -rf ashhttp
         mkdir ashhttp
         cd ashhttp
         http_script="/root/ashhttp/ashhttpproxy-linux-amd64"
@@ -438,7 +435,9 @@ EOF
         echo -e "$YELLOW"
         echo "Installing DNSTT,DoH and DoT ..."
         echo -e "$NC"
-        rm -r dnstt
+        apt -y update && apt -y upgrade
+        apt -y install iptables-persistent wget screen lsof
+        rm -rf dnstt
         mkdir dnstt
         cd dnstt
         wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/dnstt-server
@@ -498,7 +497,8 @@ EOF
         echo -e "- iptables doesn't forward the port 53 to another port"
         echo -e "$NC"
         read
-        apt-get install dns2tcp
+        apt -y update && apt -y upgrade
+        apt -y install screen lsof dns2tcp nano
         echo -e "$YELLOW"
         read -p "In this step, you will uncomment DNS and write DNS=1.1.1.1 and uncomment DNSStubListener and write DNSStubListener=no"
         echo -e "$NC"
@@ -551,25 +551,61 @@ EOF
             systemctl start dns2tcp
             systemctl enable dns2tcp
         fi
-        lsof -i :53
         echo -e "$YELLOW"
-        read -p "in the next step, add nameserver 8.8.8.8 to the coming file if there is only nameserver 127.0.0.1 or nameserver 127.0.0.53"
+        read -p "in the next step, add nameserver 1.1.1.1 to the coming file if there is only nameserver 127.0.0.1 or nameserver 127.0.0.53"
         echo -e "$NC"
         nano /etc/resolv.conf
         echo -e "$YELLOW"
-        read -p "by tapping 'Enter', you make sure that you have added nameserver 8.8.8.8"
+        read -p "by tapping 'Enter', you make sure that you have added nameserver 1.1.1.1"
         echo -e "$YELLOW"
+        lsof -i :53
         echo "DNS2TCP server installed sucessfully"
         echo -e "$NC"
         ;;
     7)
         echo -e "$YELLOW"
         echo "Installing WS..."
-        echo "You should change the WS listening port to 8080"
         echo -e "$NC"
-        wget https://raw.githubusercontent.com/khaledagn/AGN-SSH-Websocket-VPN/main/install.sh -O ws.sh
-        chmod +x ws.sh
-        ./ws.sh
+        apt -y update && apt -y upgrade
+        apt -y install iptables-persistent wget lsof
+        
+        rm -rf ashwebsocket
+        mkdir ashwebsocket
+        cd ashwebsocket
+        http_script="/root/ashhttp/ashwebsocket-linux-amd64"
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashwebsocket-linux-amd64
+        chmod 755 ashwebsocket-linux-amd64
+
+        echo -e "$YELLOW"
+        read -p "Run in background or foreground service ? (b/f): " bind
+        echo -e "$NC"
+        if [ "$bind" = "b" ]; then
+            screen -dmS ashwebsocket ./ashwebsocket-linux-amd64
+        else
+            json_content=$(cat <<-EOF
+[Unit]
+Description=Daemonize ASH Websocket Tunnel Server
+Wants=network.target
+After=network.target
+[Service]
+ExecStart=/root/ashwebsocket/ashwebsocket-linux-amd64
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
+EOF
+)
+            echo "$json_content" > /etc/systemd/system/ashwebsocket.service
+            systemctl start ashwebsocket
+            systemctl enable ashwebsocket
+        fi
+
+        lsof -i :"$http_port"
+        echo -e "$YELLOW"
+        echo "ASH Websocket installed successfully"
+        echo -e "$NC"
+        exit 1
+
         echo -e "$YELLOW"
         read -p "Bind port 80 too ? (y/n): " bind
         echo -e "$NC"
@@ -577,7 +613,6 @@ EOF
             iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
             iptables-save > /etc/iptables/rules.v4
         fi
-        websocket menu
         echo -e "$YELLOW"
         echo "WS installed sucessfully"
         echo -e "$NC"
@@ -586,6 +621,8 @@ EOF
         echo -e "$YELLOW"
         echo "Installing BadVPN UDPGW..."
         echo -e "$NC"
+        apt -y update && apt -y upgrade
+        apt -y wget lsof
         rm -r badvpn
         mkdir badvpn
         cd badvpn
@@ -607,6 +644,7 @@ EOF
         echo "$json_content" > /etc/systemd/system/badvpn.service
         systemctl start badvpn
         systemctl enable badvpn
+        lsof -i :7300
         echo -e "$YELLOW"
         echo "BadVPN UDPGW Installed Successfully"
         echo -e "$NC"
@@ -616,7 +654,8 @@ EOF
         echo -e "$YELLOW"
         echo "Installing SSL..."
         echo -e "$NC"
-        apt-get install stunnel4 -y
+        apt -y update && apt -y upgrade
+        apt -y install stunnel4 openssl sed lsof
         while true; do
             echo -e "$YELLOW"
             read -p "Remote SSL Port : " ssl_port
@@ -651,6 +690,7 @@ EOF
         sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
         systemctl start stunnel4
         systemctl enable stunnel4
+        lsof -i :"$ssl_port"
         echo -e "$YELLOW"
         echo "SSL Installed Successfully"
         echo -e "$NC"
