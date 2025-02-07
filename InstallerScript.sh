@@ -575,14 +575,7 @@ EOF
         http_script="/root/ashhttp/ashwebsocket-linux-amd64"
         wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashwebsocket-linux-amd64
         chmod 755 ashwebsocket-linux-amd64
-
-        echo -e "$YELLOW"
-        read -p "Run in background or foreground service ? (b/f): " bind
-        echo -e "$NC"
-        if [ "$bind" = "b" ]; then
-            screen -dmS ashwebsocket ./ashwebsocket-linux-amd64
-        else
-            json_content=$(cat <<-EOF
+        json_content=$(cat <<-EOF
 [Unit]
 Description=Daemonize ASH Websocket Tunnel Server
 Wants=network.target
@@ -595,12 +588,11 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
 )
-            echo "$json_content" > /etc/systemd/system/ashwebsocket.service
-            systemctl start ashwebsocket
-            systemctl enable ashwebsocket
-        fi
+        echo "$json_content" > /etc/systemd/system/ashwebsocket.service
+        systemctl start ashwebsocket
+        systemctl enable ashwebsocket
 
-        lsof -i :"$http_port"
+        lsof -i :8080
         echo -e "$YELLOW"
         echo "ASH Websocket installed successfully"
         echo -e "$NC"
