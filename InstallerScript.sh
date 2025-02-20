@@ -609,7 +609,7 @@ EOF
         echo "Installing BadVPN UDPGW..."
         echo -e "$NC"
         apt -y update && apt -y upgrade
-        apt -y wget lsof
+        apt -y install wget lsof
         rm -r badvpn
         mkdir badvpn
         cd badvpn
