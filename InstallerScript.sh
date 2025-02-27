@@ -11,6 +11,27 @@ if [ "$(whoami)" != "root" ]; then
     echo "Error: This script must be run as root."
     exit 1
 fi
+MARKER="### CUSTOM COLOR BLOCK ###"
+TEXT_TO_ADD='
+'"$MARKER"'
+YELLOW='\''\033[1;33m'\''
+RED='\''\033[1;31m'\''
+CYAN='\''\033[1;36m'\''
+GREEN='\''\033[1;32m'\''
+NC='\''\033[0m'\''
+echo ""
+echo -e "$CYAN   A   $YELLOW SSS  $RED H   H"
+echo -e "$CYAN  A A  $YELLOW S    $RED H   H"
+echo -e "$CYAN AAAAA $YELLOW SSS  $RED HHHHH"
+echo -e "$CYAN A   A $YELLOW     S$RED H   H"
+echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
+echo ""
+echo -e "$YELLOW"
+'"$MARKER"'
+'
+if ! grep -Fq "$MARKER" ~/.bashrc; then
+    echo "$TEXT_TO_ADD" >> ~/.bashrc
+fi
 cd /root
 clear
 echo -e "$CYAN   A   $YELLOW SSS  $RED H   H"
@@ -21,7 +42,7 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 4.3"
+echo "Version : 4.4"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -32,7 +53,7 @@ echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
 echo "7. Install WS(port 8080)"
 echo "8. Install BadVPN UDPGW(port 7300)"
-echo "9. Install SSL"
+echo "9. Install ASH SSL"
 echo "0. Exit"
 selected_option=-1
 
@@ -483,8 +504,9 @@ EOF
         ;;
     5)
         echo -e "$YELLOW"
-        echo "While installing, Select x8.5"
+        echo "No longer available"
         echo -e "$NC"
+        exit 1
         rm -rf install-without-key.sh; apt update; apt install curl; apt install bc; wget https://github.com/khaledagn/VPS-AGN_English_Official/raw/main/installer/install-without-key.sh; chmod 777 install-without-key.sh; ./install-without-key.sh --start
         exit 1
         ;;
@@ -639,10 +661,10 @@ EOF
         ;;
     9)
         echo -e "$YELLOW"
-        echo "Installing SSL..."
+        echo "Installing ASH SSL..."
         echo -e "$NC"
         apt -y update && apt -y upgrade
-        apt -y install stunnel4 openssl sed lsof
+        apt -y install openssl lsof screen
         while true; do
             echo -e "$YELLOW"
             read -p "Remote SSL Port : " ssl_port
@@ -667,19 +689,41 @@ EOF
                 echo -e "$NC"
             fi
         done
-        echo -e "client = no\n[SSL]\ncert = /etc/stunnel/stunnel.pem\naccept = ${ssl_port}\nconnect = 127.0.0.1:${target_port}" > /etc/stunnel/stunnel.conf
+        rm -rf ashssl
+        mkdir ashssl
+        cd ashssl
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashsslproxy-linux-amd64
+        chmod 755 ashsslproxy-linux-amd64
         openssl genrsa -out stunnel.key 2048
         openssl req -new -key stunnel.key -x509 -days 1000 -out stunnel.crt
         cat stunnel.crt stunnel.key > stunnel.pem
         rm -rf stunnel.crt
-        rm -rf stunnel.key
-        mv stunnel.pem /etc/stunnel/
-        sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
-        systemctl start stunnel4
-        systemctl enable stunnel4
+        echo -e "$YELLOW"
+        read -p "Run in background or foreground service ? (b/f): " bind
+        echo -e "$NC"
+        if [ "$bind" = "b" ]; then
+            screen -dmS ashssl ./ashsslproxy-linux-amd64 -tls_addr :$ssl_port -dstAddr 127.0.0.1:$target_port -private_key stunnel.pem -public_key stunnel.key
+        else
+            json_content=$(cat <<-EOF
+[Unit]
+Description=Daemonize ASH SSL Tunnel Server
+Wants=network.target
+After=network.target
+[Service]
+ExecStart=/root/ashssl/ashsslproxy-linux-amd64 -tls_addr :$ssl_port -dstAddr 127.0.0.1:$target_port -private_key /root/ashssl/stunnel.pem -public_key /root/ashssl/stunnel.key
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
+EOF
+)
+            echo "$json_content" > /etc/systemd/system/ashssl.service
+            systemctl start ashssl
+            systemctl enable ashssl
+        fi
         lsof -i :"$ssl_port"
         echo -e "$YELLOW"
-        echo "SSL Installed Successfully"
+        echo "ASH SSL Installed Successfully"
         echo -e "$NC"
         exit 1
         ;;
