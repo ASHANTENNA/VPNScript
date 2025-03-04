@@ -26,7 +26,6 @@ echo -e "$CYAN AAAAA $YELLOW SSS  $RED HHHHH"
 echo -e "$CYAN A   A $YELLOW     S$RED H   H"
 echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
-echo -e "$YELLOW"
 '"$MARKER"'
 '
 if ! grep -Fq "$MARKER" ~/.bashrc; then
