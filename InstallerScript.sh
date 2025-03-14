@@ -45,7 +45,7 @@ echo "Version : 4.4"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
-echo "2. Install UDP Hysteria V2.3.0"
+echo "2. Install UDP Hysteria V2.6.1"
 echo "3. Install ASH HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install VPS AGN"
@@ -205,7 +205,7 @@ EOF
         ;;
     2)
         echo -e "$YELLOW"
-        echo "Installing UDP Hysteria V2.3.0 ..."
+        echo "Installing UDP Hysteria V2.6.1 ..."
         echo -e "$NC"
         apt -y update && apt -y upgrade
         apt -y install wget nano net-tools openssl iptables-persistent screen lsof
@@ -213,7 +213,7 @@ EOF
         cd hy2
         udp_script="/root/hy2/hysteria-linux-amd64"
         if [ ! -e "$udp_script" ]; then
-            wget github.com/apernet/hysteria/releases/download/app/v2.3.0/hysteria-linux-amd64
+            wget github.com/apernet/hysteria/releases/download/app/v2.6.1/hysteria-linux-amd64
         fi
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
