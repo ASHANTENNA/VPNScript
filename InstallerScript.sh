@@ -357,7 +357,7 @@ EOF
 
         lsof -i :"$remote_udp_port"
         echo -e "$YELLOW"
-        echo "UDP Hysteria V2.3.0 installed successfully, please check the logs above"
+        echo "UDP Hysteria V2.6.1 installed successfully, please check the logs above"
         echo "IP Address :"
         curl ipv4.icanhazip.com
         echo "Obfs : '"$obfs"'"
