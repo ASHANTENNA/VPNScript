@@ -41,7 +41,7 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 4.4"
+echo "Version : 4.5"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -79,12 +79,10 @@ case $selected_option in
         echo -e "$NC"
         apt -y update && apt -y upgrade
         apt -y install wget nano net-tools openssl iptables-persistent screen lsof
+        rm -rf hy
         mkdir hy
         cd hy
-        udp_script="/root/hy/hysteria-linux-amd64"
-        if [ ! -e "$udp_script" ]; then
-            wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
-        fi
+        wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
         openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
@@ -209,12 +207,10 @@ EOF
         echo -e "$NC"
         apt -y update && apt -y upgrade
         apt -y install wget nano net-tools openssl iptables-persistent screen lsof
+        rm -rf hy2
         mkdir hy2
         cd hy2
-        udp_script="/root/hy2/hysteria-linux-amd64"
-        if [ ! -e "$udp_script" ]; then
-            wget github.com/apernet/hysteria/releases/download/app/v2.6.1/hysteria-linux-amd64
-        fi
+        wget github.com/apernet/hysteria/releases/download/app/v2.6.1/hysteria-linux-amd64
         chmod 755 hysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
         openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
@@ -248,27 +244,27 @@ EOF
         done
         file_path="/root/hy2/config.yaml"
         json_content=$(cat <<-EOF
-    listen: :$remote_udp_port
-    tls:
-      cert: ca.crt
-      key: ca.key
-    obfs:
-      type: salamander
-      salamander:
-        password: $obfs
-    quic:
-      initStreamReceiveWindow: 16777216
-      maxStreamReceiveWindow: 16777216
-      initConnReceiveWindow: 33554432
-      maxConnReceiveWindow: 33554432
-    auth:
-      type: password
-      password: $auth_str
-    masquerade:
-      type: proxy
-      proxy:
-        url: https://223.5.5.5/dns-query
-        rewriteHost: true
+listen: :$remote_udp_port
+tls:
+  cert: ca.crt
+  key: ca.key
+obfs:
+  type: salamander
+  salamander:
+    password: $obfs
+quic:
+  initStreamReceiveWindow: 16777216
+  maxStreamReceiveWindow: 16777216
+  initConnReceiveWindow: 33554432
+  maxConnReceiveWindow: 33554432
+auth:
+  type: password
+  password: $auth_str
+masquerade:
+  type: proxy
+  proxy:
+    url: https://223.5.5.5/dns-query
+    rewriteHost: true
 EOF
 )
         echo "$json_content" > "$file_path"
@@ -357,7 +353,7 @@ EOF
 
         lsof -i :"$remote_udp_port"
         echo -e "$YELLOW"
-        echo "UDP Hysteria V2.6.1 installed successfully, please check the logs above"
+        echo "UDP Hysteria V2.3.0 installed successfully, please check the logs above"
         echo "IP Address :"
         curl ipv4.icanhazip.com
         echo "Obfs : '"$obfs"'"
