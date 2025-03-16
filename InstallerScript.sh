@@ -41,11 +41,11 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 4.5"
+echo "Version : 4.6"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
-echo "2. Install ASH WSS(port 8443)"
+echo "2. Install ASH WSS"
 echo "3. Install ASH HTTP Proxy"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install VPS AGN"
@@ -203,7 +203,69 @@ EOF
         ;;
     2)
         echo -e "$YELLOW"
-        echo "ASH WSS Coming soon ..."
+        echo "Installing ASH WSS..."
+        echo -e "$NC"
+        apt -y update && apt -y upgrade
+        apt -y install openssl lsof screen
+        while true; do
+            echo -e "$YELLOW"
+            read -p "Remote WSS Port : " wss_port
+            echo -e "$NC"
+            if is_number "$wss_port" && [ "$wss_port" -ge 1 ] && [ "$wss_port" -le 65535 ]; then
+                break
+            else
+                echo -e "$YELLOW"
+                echo "Invalid input. Please enter a valid number between 1 and 65535."
+                echo -e "$NC"
+            fi
+        done
+        while true; do
+            echo -e "$YELLOW"
+            read -p "Target TCP Port : " target_port
+            echo -e "$NC"
+            if is_number "$target_port" && [ "$target_port" -ge 1 ] && [ "$target_port" -le 65535 ]; then
+                break
+            else
+                echo -e "$YELLOW"
+                echo "Invalid input. Please enter a valid number between 1 and 65535."
+                echo -e "$NC"
+            fi
+        done
+        rm -rf ashwss
+        mkdir ashwss
+        cd ashwss
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashwebsocketsni-linux-amd64
+        chmod 755 ashwebsocketsni-linux-amd64
+        openssl genrsa -out stunnel.key 2048
+        openssl req -new -key stunnel.key -x509 -days 1000 -out stunnel.crt
+        cat stunnel.crt stunnel.key > stunnel.pem
+        rm -rf stunnel.crt
+        echo -e "$YELLOW"
+        read -p "Run in background or foreground service ? (b/f): " bind
+        echo -e "$NC"
+        if [ "$bind" = "b" ]; then
+            screen -dmS ashssl ./ashwebsocketsni-linux-amd64 -tls_addr :$wss_port -dstAddr 127.0.0.1:$target_port -private_key stunnel.pem -public_key stunnel.key
+        else
+            json_content=$(cat <<-EOF
+[Unit]
+Description=Daemonize ASH WSS Tunnel Server
+Wants=network.target
+After=network.target
+[Service]
+ExecStart=/root/ashwss/ashsslproxy-linux-amd64 -tls_addr :$wss_port -dstAddr 127.0.0.1:$target_port -private_key /root/ashwss/stunnel.pem -public_key /root/ashwss/stunnel.key
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
+EOF
+)
+            echo "$json_content" > /etc/systemd/system/ashwss.service
+            systemctl start ashwss
+            systemctl enable ashwss
+        fi
+        lsof -i :"$wss_port"
+        echo -e "$YELLOW"
+        echo "ASH WSS Installed Successfully"
         echo -e "$NC"
         exit 1
         ;;
