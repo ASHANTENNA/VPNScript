@@ -123,8 +123,8 @@ case $selected_option in
             echo -e "$NC"
             exit 1
         fi
-        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
-        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
+        debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
+        debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
 
         echo -e "$YELLOW"
         read -p "Bind multiple UDP Ports? (y/n): " bind
