@@ -55,7 +55,7 @@ echo "8. Install ASH SSL"
 echo "0. Exit"
 selected_option=-1
 
-while [ $selected_option -lt 0 ] || [ $selected_option -gt 9 ]; do
+while [ $selected_option -lt 0 ] || [ $selected_option -gt 8 ]; do
     echo -e "$YELLOW"
     echo "Select a number from 0 to 8:"
     echo -e "$NC"
