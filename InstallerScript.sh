@@ -340,7 +340,7 @@ EOF
         read -p "Run in background or foreground service ? (b/f): " bind
         echo -e "$NC"
         if [ "$bind" = "b" ]; then
-            screen -dmS ashhttp ./ashhttpproxy-linux-amd64 -listen :$http_port -forward $target_port
+            screen -dmS ashhttp ./ashhttpproxy-linux-amd64 -listen :$http_port -forward 127.0.0.1:$target_port
         else
             json_content=$(cat <<-EOF
 [Unit]
@@ -348,7 +348,7 @@ Description=Daemonize ASH HTTP Tunnel Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/root/ashhttp/ashhttpproxy-linux-amd64 -listen :$http_port -forward $target_port
+ExecStart=/root/ashhttp/ashhttpproxy-linux-amd64 -listen :$http_port -forward 127.0.0.1:$target_port
 Restart=always
 RestartSec=3
 [Install]
