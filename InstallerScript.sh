@@ -41,18 +41,17 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 4.6"
+echo "Version : 4.7"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
 echo "2. Install ASH WSS"
-echo "3. Install ASH HTTP Proxy"
+echo "3. Install ASH HTTP + WS"
 echo "4. Install DNSTT, DoH and DoT"
 echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
-echo "7. Install ASH WS(port 8080)"
-echo "8. Install BadVPN UDPGW(port 7300)"
-echo "9. Install ASH SSL"
+echo "7. Install BadVPN UDPGW(port 7300)"
+echo "8. Install ASH SSL"
 echo "0. Exit"
 selected_option=-1
 
@@ -123,8 +122,8 @@ case $selected_option in
             echo -e "$NC"
             exit 1
         fi
-        debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
-        debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
+        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
+        sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
 
         echo -e "$YELLOW"
         read -p "Bind multiple UDP Ports? (y/n): " bind
@@ -271,7 +270,7 @@ EOF
         ;;
     3)
         echo -e "$YELLOW"
-        echo "Installing ASH HTTP Proxy..."
+        echo "Installing ASH HTTP + WS..."
         echo -e "$NC"
         apt -y update && apt -y upgrade
         apt -y install iptables-persistent wget screen lsof
@@ -280,6 +279,18 @@ EOF
             read -p "Remote HTTP Port : " http_port
             echo -e "$NC"
             if is_number "$http_port" && [ "$http_port" -ge 1 ] && [ "$http_port" -le 65535 ]; then
+                break
+            else
+                echo -e "$YELLOW"
+                echo "Invalid input. Please enter a valid number between 1 and 65535."
+                echo -e "$NC"
+            fi
+        done
+        while true; do
+            echo -e "$YELLOW"
+            read -p "Target HTTP Port : " target_port
+            echo -e "$NC"
+            if is_number "$target_port" && [ "$target_port" -ge 1 ] && [ "$target_port" -le 65535 ]; then
                 break
             else
                 echo -e "$YELLOW"
@@ -329,7 +340,7 @@ EOF
         read -p "Run in background or foreground service ? (b/f): " bind
         echo -e "$NC"
         if [ "$bind" = "b" ]; then
-            screen -dmS ashhttp ./ashhttpproxy-linux-amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
+            screen -dmS ashhttp ./ashhttpproxy-linux-amd64 -listen :$http_port -forward $target_port
         else
             json_content=$(cat <<-EOF
 [Unit]
@@ -337,7 +348,7 @@ Description=Daemonize ASH HTTP Tunnel Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/root/ashhttp/ashhttpproxy-linux-amd64 -addr :"$http_port" dstAddr 127.0.0.1:22
+ExecStart=/root/ashhttp/ashhttpproxy-linux-amd64 -listen :$http_port -forward $target_port
 Restart=always
 RestartSec=3
 [Install]
@@ -351,7 +362,7 @@ EOF
 
         lsof -i :"$http_port"
         echo -e "$YELLOW"
-        echo "ASH HTTP Proxy installed successfully"
+        echo "ASH HTTP + WS installed successfully"
         echo -e "$NC"
         exit 1
         ;;
@@ -489,48 +500,6 @@ EOF
         ;;
     7)
         echo -e "$YELLOW"
-        echo "Installing ASH WS..."
-        echo -e "$NC"
-        apt -y update && apt -y upgrade
-        apt -y install iptables-persistent wget lsof
-        
-        rm -rf ashwebsocket
-        mkdir ashwebsocket
-        cd ashwebsocket
-        http_script="/root/ashhttp/ashwebsocket-linux-amd64"
-        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashwebsocket-linux-amd64
-        chmod 755 ashwebsocket-linux-amd64
-        json_content=$(cat <<-EOF
-[Unit]
-Description=Daemonize ASH Websocket Tunnel Server
-Wants=network.target
-After=network.target
-[Service]
-ExecStart=/root/ashwebsocket/ashwebsocket-linux-amd64
-Restart=always
-RestartSec=3
-[Install]
-WantedBy=multi-user.target
-EOF
-)
-        echo "$json_content" > /etc/systemd/system/ashwebsocket.service
-        systemctl start ashwebsocket
-        systemctl enable ashwebsocket
-
-        echo -e "$YELLOW"
-        read -p "Bind port 80 too ? (y/n): " bind
-        echo -e "$NC"
-        if [ "$bind" = "y" ]; then
-            iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
-            iptables-save > /etc/iptables/rules.v4
-        fi
-        lsof -i :8080
-        echo -e "$YELLOW"
-        echo "WS installed sucessfully"
-        echo -e "$NC"
-        ;;
-    8)
-        echo -e "$YELLOW"
         echo "Installing BadVPN UDPGW..."
         echo -e "$NC"
         apt -y update && apt -y upgrade
@@ -562,7 +531,7 @@ EOF
         echo -e "$NC"
         exit 1
         ;;
-    9)
+    8)
         echo -e "$YELLOW"
         echo "Installing ASH SSL..."
         echo -e "$NC"
