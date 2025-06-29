@@ -243,7 +243,7 @@ EOF
         read -p "Run in background or foreground service ? (b/f): " bind
         echo -e "$NC"
         if [ "$bind" = "b" ]; then
-            screen -dmS ashwss ./ashwebsocketsni-linux-amd64 -tls_addr :$wss_port -dstAddr 127.0.0.1:$target_port -private_key stunnel.pem -public_key stunnel.key
+            screen -dmS ashwss ./ashwebsocketsni-linux-amd64 -listen :$wss_port -forward 127.0.0.1:$target_port -private_key stunnel.pem -public_key stunnel.key
         else
             json_content=$(cat <<-EOF
 [Unit]
@@ -251,7 +251,7 @@ Description=Daemonize ASH WSS Tunnel Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/root/ashwss/ashwebsocketsni-linux-amd64 -tls_addr :$wss_port -dstAddr 127.0.0.1:$target_port -private_key /root/ashwss/stunnel.pem -public_key /root/ashwss/stunnel.key
+ExecStart=/root/ashwss/ashwebsocketsni-linux-amd64 -listen :$wss_port -forward 127.0.0.1:$target_port -private_key /root/ashwss/stunnel.pem -public_key /root/ashwss/stunnel.key
 Restart=always
 RestartSec=3
 [Install]
