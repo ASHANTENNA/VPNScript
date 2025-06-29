@@ -574,7 +574,7 @@ EOF
         read -p "Run in background or foreground service ? (b/f): " bind
         echo -e "$NC"
         if [ "$bind" = "b" ]; then
-            screen -dmS ashssl ./ashsslproxy-linux-amd64 -tls_addr :$ssl_port -dstAddr 127.0.0.1:$target_port -private_key stunnel.pem -public_key stunnel.key
+            screen -dmS ashssl ./ashsslproxy-linux-amd64 -listen :$ssl_port -forward 127.0.0.1:$target_port -private_key stunnel.pem -public_key stunnel.key
         else
             json_content=$(cat <<-EOF
 [Unit]
@@ -582,7 +582,7 @@ Description=Daemonize ASH SSL Tunnel Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/root/ashssl/ashsslproxy-linux-amd64 -tls_addr :$ssl_port -dstAddr 127.0.0.1:$target_port -private_key /root/ashssl/stunnel.pem -public_key /root/ashssl/stunnel.key
+ExecStart=/root/ashssl/ashsslproxy-linux-amd64 -listen :$ssl_port -forward 127.0.0.1:$target_port -private_key /root/ashssl/stunnel.pem -public_key /root/ashssl/stunnel.key
 Restart=always
 RestartSec=3
 [Install]
