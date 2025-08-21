@@ -81,8 +81,8 @@ case $selected_option in
         rm -rf hy
         mkdir hy
         cd hy
-        wget github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
-        chmod 755 hysteria-linux-amd64
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashhysteria-linux-amd64
+        chmod 755 ashhysteria-linux-amd64
         openssl ecparam -genkey -name prime256v1 -out ca.key
         openssl req -new -x509 -days 36500 -key ca.key -out ca.crt -subj "/CN=bing.com"
         while true; do
@@ -173,7 +173,7 @@ case $selected_option in
         read -p "Run in background or foreground service ? (b/f): " bind
         echo -e "$NC"
         if [ "$bind" = "b" ]; then
-            screen -dmS hy ./hysteria-linux-amd64 server --log-level 0
+            screen -dmS hy ./ashhysteria-linux-amd64 server --log-level 0
         else
             json_content=$(cat <<-EOF
 [Unit]
@@ -181,7 +181,7 @@ Description=Daemonize UDP Hysteria V1 Tunnel Server
 Wants=network.target
 After=network.target
 [Service]
-ExecStart=/root/hy/hysteria-linux-amd64 server -c /root/hy/config.json --log-level 0
+ExecStart=/root/hy/ashhysteria-linux-amd64 server -c /root/hy/config.json --log-level 0
 Restart=always
 RestartSec=3
 [Install]
