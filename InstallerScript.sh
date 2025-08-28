@@ -41,7 +41,7 @@ echo -e "$CYAN A   A $YELLOW SSSS $RED H   H"
 echo ""
 echo -e "$YELLOW
 VPN Tunnel Installer by AhmedSCRIPT Hacker"
-echo "Version : 4.7"
+echo "Version : 4.8"
 echo -e "$NC
 Select an option"
 echo "1. Install UDP Hysteria V1.3.5"
@@ -52,12 +52,13 @@ echo "5. Install VPS AGN"
 echo "6. Install DNS2TCP"
 echo "7. Install BadVPN UDPGW(port 7300)"
 echo "8. Install ASH SSL"
+echo "9. Install ASH SSH"
 echo "0. Exit"
 selected_option=-1
 
-while [ $selected_option -lt 0 ] || [ $selected_option -gt 8 ]; do
+while [ $selected_option -lt 0 ] || [ $selected_option -gt 9 ]; do
     echo -e "$YELLOW"
-    echo "Select a number from 0 to 8:"
+    echo "Select a number from 0 to 9:"
     echo -e "$NC"
     read input
 
@@ -429,7 +430,6 @@ EOF
         echo -e "Before you continue, make sure that :"
         echo -e "- No program uses UDP Port 53"
         echo -e "- DNSTT is not running"
-        echo -e "- iodine is not running"
         echo -e "- iptables doesn't forward the port 53 to another port"
         echo -e "$NC"
         read
@@ -451,6 +451,18 @@ EOF
         read -p "Your Nameserver: " nameserver
         read -p "Your key: " key
         echo -e "$NC"
+        while true; do
+            echo -e "$YELLOW"
+            read -p "Target TCP Port : " target_port
+            echo -e "$NC"
+            if is_number "$target_port" && [ "$target_port" -ge 1 ] && [ "$target_port" -le 65535 ]; then
+                break
+            else
+                echo -e "$YELLOW"
+                echo "Invalid input. Please enter a valid number between 1 and 65535."
+                echo -e "$NC"
+            fi
+        done
         file_path="/root/dns2tcp/dns2tcpdrc"
         json_content=$(cat <<EOF
 listen = 0.0.0.0
@@ -459,7 +471,7 @@ user = ashtunnel
 chroot = /var/empty/dns2tcp/
 domain = $nameserver
 key = $key
-resources = ssh:127.0.0.1:22
+resources = ssh:127.0.0.1:$target_port
 EOF
 )
         echo "$json_content" > "$file_path"
@@ -596,6 +608,62 @@ EOF
         lsof -i :"$ssl_port"
         echo -e "$YELLOW"
         echo "ASH SSL Installed Successfully"
+        echo -e "$NC"
+        exit 1
+        ;;
+    9)
+        echo -e "$YELLOW"
+        echo "[Warning] this version of SSH is only for tunneling, it has anti torrent features,"
+        echo "it doesn't come with shell environment support, so do NOT ever replace it with your"
+        echo "current SSH and use it only for tunneling, otherwise you will lose access for your shell."
+        read -p "Press enter to accept and continue"
+        echo "Installing ASH SSH..."
+        echo -e "$NC"
+        apt -y update && apt -y upgrade
+        apt -y install lsof screen
+        while true; do
+            echo -e "$YELLOW"
+            read -p "Remote SSH Port : " ssh_port
+            echo -e "$NC"
+            if is_number "$ssh_port" && [ "$ssh_port" -ge 1 ] && [ "$ssh_port" -le 65535 ]; then
+                break
+            else
+                echo -e "$YELLOW"
+                echo "Invalid input. Please enter a valid number between 1 and 65535."
+                echo -e "$NC"
+            fi
+        done
+        rm -rf ashssh
+        mkdir ashssh
+        cd ashssh
+        wget https://raw.githubusercontent.com/ASHANTENNA/VPNScript/main/ashssh-linux-amd64
+        chmod 755 ashssh-linux-amd64
+        echo -e "$YELLOW"
+        read -p "Run in background or foreground service ? (b/f): " bind
+        echo -e "$NC"
+        if [ "$bind" = "b" ]; then
+            screen -dmS ashssh ./ashssh-linux-amd64 -listen :$ssh_port -hostkey /etc/ssh/ssh_host_rsa_key
+        else
+            json_content=$(cat <<-EOF
+[Unit]
+Description=Daemonize ASH SSH Tunnel Server
+Wants=network.target
+After=network.target
+[Service]
+ExecStart=/root/ashssh/ashssh-linux-amd64 -listen :$ssh_port -hostkey /etc/ssh/ssh_host_rsa_key
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
+EOF
+)
+            echo "$json_content" > /etc/systemd/system/ashssh.service
+            systemctl start ashssh
+            systemctl enable ashssh
+        fi
+        lsof -i :"$ssh_port"
+        echo -e "$YELLOW"
+        echo "ASH SSH Installed Successfully"
         echo -e "$NC"
         exit 1
         ;;
